@@ -9,9 +9,9 @@ final class ModuleManager {
     init(modules: [any MenuBarModule]) {
         self.modules = modules
         let defaults = UserDefaults.standard
-        enabledIDs = Set(modules.map(\.id).filter { id in
-            defaults.object(forKey: Self.key(id)) as? Bool ?? true
-        })
+        enabledIDs = Set(modules.filter { module in
+            defaults.object(forKey: Self.key(module.id)) as? Bool ?? module.enabledByDefault
+        }.map(\.id))
     }
 
     func activateEnabled() {

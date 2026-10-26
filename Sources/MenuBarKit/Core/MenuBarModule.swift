@@ -10,8 +10,14 @@ protocol MenuBarModule: AnyObject {
     var name: String { get }
     /// SF Symbol shown next to the module in the Settings sidebar.
     var symbol: String { get }
+    /// Whether the module starts switched on before the user has touched it.
+    var enabledByDefault: Bool { get }
 
     func activate()
     func deactivate()
     func makeSettingsView() -> AnyView
+}
+
+extension MenuBarModule {
+    var enabledByDefault: Bool { true }
 }

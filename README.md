@@ -8,6 +8,9 @@ switched on and off in Settings.
 - **Spotify** — current track in the menu bar (album art, artist – title, time,
   progress bar; every element optional and reorderable). Click for a popover with
   artwork, a seekable progress bar and playback controls.
+- **Input** (off by default) — reverses the mouse wheel (vertical and horizontal
+  separately) while the trackpad keeps natural scrolling. Needs the Accessibility
+  permission; only scroll events are watched.
 
 Right-click any MenuBarKit item for Settings and Quit. Opening the app again from
 Spotlight also opens Settings.
