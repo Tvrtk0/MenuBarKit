@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 #
-# Wraps the SwiftPM release binary into build/MenuBarKit.app and signs it with the
+# Wraps the SwiftPM release binary into build.noindex/MenuBarKit.app and signs it with the
 # local certificate from setup-signing.sh (ad-hoc if it's missing).
 #
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
-APP=build/MenuBarKit.app
+APP=build.noindex/MenuBarKit.app
 VERSION=0.1.0
 IDENTITY="MenuBarKit Local Signing"
 
@@ -19,6 +19,7 @@ repo=$(git remote get-url origin 2>/dev/null | sed -E 's#^(git@github\.com:|http
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$bin_dir/MenuBarKit" "$APP/Contents/MacOS/MenuBarKit"
+cp Support/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
 sed -e "s|__VERSION__|$VERSION|" \
     -e "s|__BUILD__|$build|" \
     -e "s|__COMMIT__|$commit|" \

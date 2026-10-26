@@ -1,15 +1,15 @@
 APP_NAME := MenuBarKit
-APP      := build/$(APP_NAME).app
+APP      := build.noindex/$(APP_NAME).app
 DEST     := /Applications/$(APP_NAME).app
 
 .PHONY: build run install update uninstall signing clean
 
-## build: compile a release build and wrap it in build/MenuBarKit.app
+## build: compile a release build and wrap it in build.noindex/MenuBarKit.app
 build:
 	swift build -c release
 	scripts/bundle.sh
 
-## run: build and launch from build/ without installing
+## run: build and launch from build.noindex/ without installing
 run: build
 	@scripts/quit.sh
 	open $(APP)
@@ -36,4 +36,4 @@ signing:
 	scripts/setup-signing.sh
 
 clean:
-	rm -rf .build build
+	rm -rf .build build.noindex

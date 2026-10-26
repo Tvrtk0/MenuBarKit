@@ -42,7 +42,7 @@ By hand:
 ```bash
 make update     # git pull + install
 make install    # build + copy to /Applications + relaunch
-make run        # build + launch from build/ without installing
+make run        # build + launch from build.noindex/ without installing
 make uninstall
 ```
 
@@ -53,7 +53,7 @@ Sources/MenuBarKit/
   App/        entry point, app delegate
   Core/       module protocol + manager, status item host, settings window, updater
   Modules/    one folder per module
-Support/      Info.plist template (filled in by scripts/bundle.sh)
+Support/      Info.plist template (filled in by scripts/bundle.sh), app icon (scripts/make-icon.swift)
 scripts/      bundling, signing, quitting the running app
 ```
 
