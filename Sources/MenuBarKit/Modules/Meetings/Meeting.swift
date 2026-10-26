@@ -64,7 +64,7 @@ enum MeetingLink {
     }
 }
 
-/// "in 12 min", "in 1 h 5 min", "now", or "12 min left" while it's on.
+/// "in 12min", "in 1h 5min", "now", or "12min left" while it's on.
 func meetingTimeText(_ meeting: Meeting, now: Date) -> String {
     if meeting.isOngoing(at: now) {
         return "\(durationText(meeting.end.timeIntervalSince(now))) left"
@@ -75,7 +75,7 @@ func meetingTimeText(_ meeting: Meeting, now: Date) -> String {
 
 private func durationText(_ interval: TimeInterval) -> String {
     let minutes = max(1, Int((interval / 60).rounded(.up)))
-    if minutes < 60 { return "\(minutes) min" }
+    if minutes < 60 { return "\(minutes)min" }
     let (hours, rest) = (minutes / 60, minutes % 60)
-    return rest == 0 ? "\(hours) h" : "\(hours) h \(rest) min"
+    return rest == 0 ? "\(hours)h" : "\(hours)h \(rest)min"
 }
