@@ -34,18 +34,20 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
         button.action = #selector(handleClick(_:))
         button.sendAction(on: [.leftMouseUp, .rightMouseUp])
 
-        let host = ClickThroughHostingView(rootView: StatusItemLabel(content: label) { [weak self] width in
-            self?.item.length = width
-        })
-        host.sizingOptions = []
-        host.translatesAutoresizingMaskIntoConstraints = false
+        let host = LabelHostingView(rootView: label
+            .fixedSize()
+            .padding(.horizontal, 6)
+            .frame(maxHeight: .infinity))
+        host.sizingOptions = [.intrinsicContentSize]
+        host.autoresizingMask = [.height]
+        host.onSizeChange = { [weak self, weak host] in
+            guard let self, let host, let button = self.item.button else { return }
+            let width = host.fittingSize.width.rounded(.up)
+            host.frame = NSRect(x: 0, y: 0, width: width, height: button.bounds.height)
+            if self.item.length != width { self.item.length = width }
+        }
         button.addSubview(host)
-        NSLayoutConstraint.activate([
-            host.leadingAnchor.constraint(equalTo: button.leadingAnchor),
-            host.trailingAnchor.constraint(equalTo: button.trailingAnchor),
-            host.topAnchor.constraint(equalTo: button.topAnchor),
-            host.bottomAnchor.constraint(equalTo: button.bottomAnchor),
-        ])
+        host.onSizeChange?()
     }
 
     func remove() {
@@ -102,30 +104,17 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
     }
 }
 
-/// Sizes the status item to the label's natural width.
-private struct StatusItemLabel<Content: View>: View {
-    let content: Content
-    let onWidthChange: (CGFloat) -> Void
+/// Hosts a status item label: reports every content size change so the item can
+/// resize to fit, and lets clicks fall through to the status bar button underneath.
+private final class LabelHostingView<Content: View>: NSHostingView<Content> {
+    var onSizeChange: (() -> Void)?
 
-    var body: some View {
-        content
-            .fixedSize()
-            .padding(.horizontal, 6)
-            .background(GeometryReader { proxy in
-                Color.clear.preference(key: WidthKey.self, value: proxy.size.width)
-            })
-            .onPreferenceChange(WidthKey.self) { onWidthChange($0.rounded(.up)) }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+    override func invalidateIntrinsicContentSize() {
+        super.invalidateIntrinsicContentSize()
+        // Deferred: SwiftUI invalidates mid-update, before the new size is measurable.
+        DispatchQueue.main.async { [weak self] in self?.onSizeChange?() }
     }
-}
 
-private struct WidthKey: PreferenceKey {
-    static let defaultValue: CGFloat = 0
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = nextValue() }
-}
-
-/// Lets clicks fall through to the status bar button underneath.
-private final class ClickThroughHostingView<Content: View>: NSHostingView<Content> {
     override func hitTest(_ point: NSPoint) -> NSView? { nil }
 }
 
