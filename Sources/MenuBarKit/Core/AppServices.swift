@@ -50,7 +50,7 @@ final class AppServices {
         if showCoreIcon, coreItem == nil {
             coreItem = StatusItemController(
                 autosaveName: "MenuBarKit.core",
-                label: Image(systemName: "menubar.rectangle")
+                label: Image(nsImage: AppGlyph.menuBar).renderingMode(.template)
             )
         } else if !showCoreIcon, let item = coreItem {
             item.remove()
