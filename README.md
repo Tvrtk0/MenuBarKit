@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="Support/AppIcon.png" width="128" alt="MenuBarKit icon">
+</p>
+
 # MenuBarKit
 
 A personal, modular macOS menu bar app. Each feature is a module that can be
@@ -8,6 +12,11 @@ switched on and off in Settings.
 - **Spotify** — current track in the menu bar (album art, artist – title, time,
   progress bar; every element optional and reorderable). Click for a popover with
   artwork, a seekable progress bar and playback controls.
+
+  <img src="docs/spotify-mockup.svg" width="520" alt="Spotify module: the menu bar item with artwork, artist – title and a progress bar, and its popover with artwork, seek bar and playback controls">
+
+  <sub>Illustration with placeholder track data.</sub>
+
 - **Input** (off by default) — reverses the mouse wheel (vertical and horizontal
   separately) while the trackpad keeps natural scrolling. Needs the Accessibility
   permission; only scroll events are watched.
