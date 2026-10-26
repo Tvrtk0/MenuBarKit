@@ -60,11 +60,7 @@ struct BarLabelView: View {
             Image(systemName: nowPlaying.state == .playing ? "play.fill" : "pause.fill")
                 .font(.system(size: 10))
         case .text(let text):
-            // SwiftUI won't truncate inside a fixedSize parent, so measure and cap explicitly.
-            Text(text)
-                .lineLimit(1)
-                .truncationMode(.tail)
-                .frame(width: min(Self.width(of: text), settings.maxTextWidth), alignment: .leading)
+            MenuBarText(text: text, maxWidth: settings.maxTextWidth)
         case .time:
             Text("\(formatTime(nowPlaying.position))/\(formatTime(nowPlaying.track?.duration ?? 0))")
                 .monospacedDigit()
@@ -91,11 +87,6 @@ struct BarLabelView: View {
         }
         .frame(width: 18, height: 18)
         .clipShape(RoundedRectangle(cornerRadius: 3))
-    }
-
-    private static func width(of text: String) -> CGFloat {
-        let size = (text as NSString).size(withAttributes: [.font: NSFont.menuBarFont(ofSize: 0)])
-        return size.width.rounded(.up) + 1
     }
 }
 

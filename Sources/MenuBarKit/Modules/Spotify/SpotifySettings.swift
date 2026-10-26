@@ -32,17 +32,6 @@ struct BarElementConfig: Codable, Equatable {
     var isEnabled: Bool
 }
 
-enum IdleBehavior: String, CaseIterable {
-    case hide, icon
-
-    var label: String {
-        switch self {
-        case .hide: "Hide the item"
-        case .icon: "Show a music icon"
-        }
-    }
-}
-
 @Observable @MainActor
 final class SpotifySettings {
     /// Order here is the order in the menu bar.
@@ -84,12 +73,6 @@ final class SpotifySettings {
         progressBarWidth = defaults.object(forKey: Self.key("progressBarWidth")) as? Double ?? 50
         dimWhenPaused = defaults.object(forKey: Self.key("dimWhenPaused")) as? Bool ?? true
         idleBehavior = (defaults.string(forKey: Self.key("idleBehavior"))).flatMap(IdleBehavior.init) ?? .hide
-    }
-
-    func move(_ index: Int, by offset: Int) {
-        let target = index + offset
-        guard elements.indices.contains(index), elements.indices.contains(target) else { return }
-        elements.swapAt(index, target)
     }
 
     func resetToDefaults() {

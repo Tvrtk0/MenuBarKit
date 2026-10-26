@@ -19,23 +19,8 @@ struct SpotifySettingsView: View {
             }
 
             Section {
-                ForEach(Array(settings.elements.enumerated()), id: \.element.element) { index, config in
-                    HStack {
-                        Toggle(isOn: Binding(
-                            get: { settings.elements[index].isEnabled },
-                            set: { settings.elements[index].isEnabled = $0 }
-                        )) {
-                            Label(config.element.label, systemImage: config.element.symbol)
-                        }
-                        .toggleStyle(.checkbox)
-                        Spacer()
-                        Button { settings.move(index, by: -1) } label: { Image(systemName: "chevron.up") }
-                            .disabled(index == 0)
-                        Button { settings.move(index, by: 1) } label: { Image(systemName: "chevron.down") }
-                            .disabled(index == settings.elements.count - 1)
-                    }
-                    .buttonStyle(.borderless)
-                }
+                ElementOrderRows(items: $settings.elements, isEnabled: \.isEnabled,
+                                 label: \.element.label, symbol: \.element.symbol)
             } header: {
                 Text("Shown in the menu bar")
             } footer: {
