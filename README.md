@@ -17,6 +17,12 @@ switched on and off in Settings.
 
   <sub>Illustration with placeholder track data.</sub>
 
+- **Meetings** (off by default) — the next meeting in the menu bar (icon, title,
+  time until / time left, start time; configurable like Spotify), today's and
+  tomorrow's meetings with Join buttons for Meet/Zoom/Teams/Webex links, and a
+  notification with a Join button before each one. Reads the calendars in macOS
+  Calendar via EventKit; skips all-day and declined events.
+
 - **Input** (off by default) — reverses the mouse wheel (vertical and horizontal
   separately) while the trackpad keeps natural scrolling; Caps Lock as Escape on
   tap and Control on hold; Escape as Caps Lock. Keys are remapped with the

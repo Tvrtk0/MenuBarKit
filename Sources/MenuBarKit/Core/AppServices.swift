@@ -22,7 +22,7 @@ final class AppServices {
     @ObservationIgnored private var settingsWindow: NSWindow?
 
     private init() {
-        modules = ModuleManager(modules: [SpotifyModule(), InputModule()])
+        modules = ModuleManager(modules: [SpotifyModule(), MeetingsModule(), InputModule()])
         showCoreIcon = UserDefaults.standard.bool(forKey: "showCoreIcon")
     }
 

@@ -24,6 +24,8 @@
 	<true/>
 	<key>NSAppleEventsUsageDescription</key>
 	<string>MenuBarKit reads the current track from Spotify and sends play, pause and skip commands.</string>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>MenuBarKit shows your next meeting in the menu bar and reminds you before it starts.</string>
 	<key>MBKCommit</key>
 	<string>__COMMIT__</string>
 	<key>MBKBranch</key>
