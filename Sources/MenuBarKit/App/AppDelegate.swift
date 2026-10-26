@@ -2,9 +2,24 @@ import AppKit
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
+    private var terminationSignal: DispatchSourceSignal?
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.mainMenu = makeMainMenu()
         AppServices.shared.start()
+
+        // `pkill` (make install/update) sends SIGTERM, which would skip cleanup;
+        // route it through a normal quit instead.
+        signal(SIGTERM, SIG_IGN)
+        let source = DispatchSource.makeSignalSource(signal: SIGTERM, queue: .main)
+        source.setEventHandler { NSApp.terminate(nil) }
+        source.resume()
+        terminationSignal = source
+    }
+
+    /// Modules undo system-wide changes (e.g. key remaps) so nothing outlives the app.
+    func applicationWillTerminate(_ notification: Notification) {
+        AppServices.shared.modules.deactivateAll()
     }
 
     /// Opening the app again (Spotlight, Finder) brings up Settings — the way back in

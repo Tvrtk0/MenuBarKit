@@ -20,6 +20,13 @@ final class ModuleManager {
         }
     }
 
+    /// Shuts every running module down without changing what's saved as enabled.
+    func deactivateAll() {
+        for module in modules where enabledIDs.contains(module.id) {
+            module.deactivate()
+        }
+    }
+
     func isEnabled(_ module: any MenuBarModule) -> Bool {
         enabledIDs.contains(module.id)
     }

@@ -18,8 +18,10 @@ switched on and off in Settings.
   <sub>Illustration with placeholder track data.</sub>
 
 - **Input** (off by default) — reverses the mouse wheel (vertical and horizontal
-  separately) while the trackpad keeps natural scrolling. Needs the Accessibility
-  permission; only scroll events are watched.
+  separately) while the trackpad keeps natural scrolling; Caps Lock as Escape on
+  tap and Control on hold; Escape as Caps Lock. Keys are remapped with the
+  built-in `hidutil`, and an event tap adds the tap-for-Escape. Needs the
+  Accessibility permission.
 
 Right-click any MenuBarKit item for Settings and Quit. Opening the app again from
 Spotlight also opens Settings.
