@@ -1,4 +1,4 @@
-import Foundation
+import AppKit
 import IOKit
 import IOKit.hid
 
@@ -20,6 +20,7 @@ final class KeyRemapper {
     private var mappings: [Mapping] = []
     private var notifyPort: IONotificationPortRef?
     private var iterator: io_iterator_t = 0
+    private var wakeObservers: [NSObjectProtocol] = []
 
     func apply(_ mappings: [Mapping]) {
         guard mappings != self.mappings else { return }
@@ -27,8 +28,10 @@ final class KeyRemapper {
         push()
         if mappings.isEmpty {
             stopWatchingKeyboards()
+            stopWatchingWake()
         } else {
             startWatchingKeyboards()
+            startWatchingWake()
         }
     }
 
@@ -78,7 +81,29 @@ final class KeyRemapper {
         notifyPort = nil
     }
 
-    fileprivate func keyboardAdded() {
+    // MARK: Wake and session switches
+
+    /// macOS re-applies its own Modifier Keys settings on wake and when the user
+    /// session becomes active again, which can overwrite these mappings.
+    private func startWatchingWake() {
+        guard wakeObservers.isEmpty else { return }
+        let center = NSWorkspace.shared.notificationCenter
+        for name in [NSWorkspace.didWakeNotification, NSWorkspace.sessionDidBecomeActiveNotification] {
+            wakeObservers.append(center.addObserver(forName: name, object: nil, queue: .main) { [weak self] _ in
+                MainActor.assumeIsolated { self?.reapplySoon() }
+            })
+        }
+    }
+
+    private func stopWatchingWake() {
+        for observer in wakeObservers {
+            NSWorkspace.shared.notificationCenter.removeObserver(observer)
+        }
+        wakeObservers.removeAll()
+    }
+
+    /// Re-applies the mappings shortly after a keyboard appears or the Mac wakes.
+    fileprivate func reapplySoon() {
         Task {
             // Give the new device a moment to register before mapping it.
             try? await Task.sleep(for: .seconds(1))
@@ -98,5 +123,5 @@ private func keyboardAddedCallback(refcon: UnsafeMutableRawPointer?, iterator: i
     guard let refcon else { return }
     let remapper = Unmanaged<KeyRemapper>.fromOpaque(refcon).takeUnretainedValue()
     // Delivered on the main queue (see IONotificationPortSetDispatchQueue).
-    MainActor.assumeIsolated { remapper.keyboardAdded() }
+    MainActor.assumeIsolated { remapper.reapplySoon() }
 }
