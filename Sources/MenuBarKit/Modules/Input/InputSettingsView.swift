@@ -4,8 +4,6 @@ struct InputSettingsView: View {
     @Bindable var settings: InputSettings
     let permission: AccessibilityPermission
 
-    private static let scrollReverserID = "com.pilotmoon.scroll-reverser"
-
     var body: some View {
         Form {
             Section {
@@ -32,17 +30,6 @@ struct InputSettingsView: View {
             } footer: {
                 Text("Relative to the system “Natural scrolling” setting, which applies to every device.")
                     .font(.caption).foregroundStyle(.secondary)
-            }
-
-            // Re-evaluated every couple of seconds so the warning clears once it's quit.
-            TimelineView(.periodic(from: .now, by: 2)) { _ in
-                if let other = NSRunningApplication.runningApplications(withBundleIdentifier: Self.scrollReverserID).first {
-                    Section {
-                        Label("Scroll Reverser is running — both reversing cancels out.", systemImage: "exclamationmark.triangle.fill")
-                            .foregroundStyle(.orange)
-                        Button("Quit Scroll Reverser") { other.terminate() }
-                    }
-                }
             }
         }
         .formStyle(.grouped)

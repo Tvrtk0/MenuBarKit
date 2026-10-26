@@ -6,7 +6,7 @@ final class InputModule: MenuBarModule {
     let id = "input"
     let name = "Input"
     let symbol = "computermouse"
-    /// Off until asked for: it needs Accessibility, and would fight Scroll Reverser.
+    /// Off until asked for: it needs Accessibility.
     let enabledByDefault = false
 
     private let settings = InputSettings()
