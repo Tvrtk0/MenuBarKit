@@ -1,8 +1,8 @@
 // Draws the app icon and writes Support/AppIcon.icns (plus a 1024 px preview PNG).
 // Run from the repo root: swift scripts/make-icon.swift
 //
-// Motif: a menu bar with one highlighted item dropping a popover card — the
-// app's whole idea at a glance. Colours match the Spotify mockup palette.
+// Motif: a minimal menu bar — one bold bar over three items, one of them lit —
+// on a graphite tile, in the spirit of Apple's own utilities.
 
 import AppKit
 
@@ -17,6 +17,10 @@ func roundedRect(_ x: CGFloat, _ y: CGFloat, _ w: CGFloat, _ h: CGFloat, _ r: CG
     NSBezierPath(roundedRect: NSRect(x: x, y: y, width: w, height: h), xRadius: r, yRadius: r)
 }
 
+func circle(_ cx: CGFloat, _ cy: CGFloat, _ r: CGFloat) -> NSBezierPath {
+    NSBezierPath(ovalIn: NSRect(x: cx - r, y: cy - r, width: r * 2, height: r * 2))
+}
+
 func drawIcon() {
     // Tile on Apple's icon grid: 824 pt body, 100 pt margin for the shadow.
     let tile = roundedRect(100, 100, 824, 824, 185)
@@ -27,101 +31,44 @@ func drawIcon() {
     shadow.shadowBlurRadius = 28
     shadow.shadowOffset = NSSize(width: 0, height: -12)
     shadow.set()
-    color(0x3A1466).setFill()
+    color(0x2A2C31).setFill()
     tile.fill()
     NSGraphicsContext.restoreGraphicsState()
 
     NSGraphicsContext.saveGraphicsState()
     tile.addClip()
-    NSGradient(colors: [color(0x2A0F52), color(0x6B1F8A), color(0xA02F7C)])!
-        .draw(in: tile, angle: -60)
-    NSGradient(colors: [color(0xFF7A45, 0.55), color(0xFF7A45, 0)])!
-        .draw(fromCenter: NSPoint(x: 180, y: 160), radius: 0, toCenter: NSPoint(x: 180, y: 160), radius: 620, options: [])
-
-    // Background waves, faint.
-    for (i, alpha) in [0.10, 0.16, 0.10].enumerated() {
-        let y = 300 + CGFloat(i) * 46
-        let wave = NSBezierPath()
-        wave.move(to: NSPoint(x: 80, y: y))
-        wave.curve(to: NSPoint(x: 520, y: y + 10), controlPoint1: NSPoint(x: 230, y: y + 140), controlPoint2: NSPoint(x: 380, y: y - 120))
-        wave.curve(to: NSPoint(x: 950, y: y + 40), controlPoint1: NSPoint(x: 680, y: y + 140), controlPoint2: NSPoint(x: 820, y: y - 60))
-        wave.lineWidth = 10
-        color(0xFFD2A8, alpha).setStroke()
-        wave.stroke()
-    }
+    NSGradient(colors: [color(0x4A4D55), color(0x2A2C31), color(0x1B1C20)])!
+        .draw(in: tile, angle: -90)
+    // Soft sheen along the top edge.
+    NSGradient(colors: [color(0xFFFFFF, 0.10), color(0xFFFFFF, 0)])!
+        .draw(in: NSRect(x: 100, y: 700, width: 824, height: 224), angle: -90)
     NSGraphicsContext.restoreGraphicsState()
 
-    // Menu bar.
-    color(0xFFFFFF, 0.93).setFill()
-    roundedRect(170, 700, 684, 96, 48).fill()
-    color(0x3A1466, 0.55).setFill()
-    NSBezierPath(ovalIn: NSRect(x: 222, y: 728, width: 40, height: 40)).fill()
-    color(0x3A1466, 0.3).setFill()
-    roundedRect(282, 736, 88, 24, 12).fill()
-    // Highlighted item (the module whose popover is open).
-    color(0xFF7A45).setFill()
-    roundedRect(418, 718, 188, 60, 30).fill()
-    color(0xFFFFFF, 0.95).setFill()
-    roundedRect(446, 739, 18, 18, 5).fill()
-    roundedRect(476, 742, 104, 12, 6).fill()
-    color(0x3A1466, 0.3).setFill()
-    NSBezierPath(ovalIn: NSRect(x: 660, y: 732, width: 32, height: 32)).fill()
-    roundedRect(712, 736, 88, 24, 12).fill()
+    // Inner edge highlight, as on Apple's dark icons.
+    let rim = roundedRect(102, 102, 820, 820, 183)
+    rim.lineWidth = 3
+    color(0xFFFFFF, 0.08).setStroke()
+    rim.stroke()
 
-    // Popover card with its arrow.
+    // The menu bar.
+    color(0xFFFFFF).setFill()
+    roundedRect(232, 572, 560, 72, 36).fill()
+
+    // Three items under it; the last one lit.
+    color(0xFFFFFF, 0.55).setFill()
+    circle(320, 420, 44).fill()
+    circle(512, 420, 44).fill()
+
+    let accent = color(0x34C759)
     NSGraphicsContext.saveGraphicsState()
-    let cardShadow = NSShadow()
-    cardShadow.shadowColor = NSColor.black.withAlphaComponent(0.3)
-    cardShadow.shadowBlurRadius = 30
-    cardShadow.shadowOffset = NSSize(width: 0, height: -10)
-    cardShadow.set()
-    // One transparency layer so card and arrow cast a single shadow with no seam.
-    let cg = NSGraphicsContext.current!.cgContext
-    cg.beginTransparencyLayer(auxiliaryInfo: nil)
-    color(0xFFFFFF, 0.97).setFill()
-    roundedRect(262, 214, 500, 430, 52).fill()
-    let arrow = NSBezierPath()
-    arrow.move(to: NSPoint(x: 472, y: 630))
-    arrow.line(to: NSPoint(x: 512, y: 688))
-    arrow.line(to: NSPoint(x: 552, y: 630))
-    arrow.close()
-    arrow.fill()
-    cg.endTransparencyLayer()
+    let glow = NSShadow()
+    glow.shadowColor = accent.withAlphaComponent(0.8)
+    glow.shadowBlurRadius = 50
+    glow.shadowOffset = .zero
+    glow.set()
+    accent.setFill()
+    circle(704, 420, 44).fill()
     NSGraphicsContext.restoreGraphicsState()
-
-    // Card content: artwork, two text lines, progress, play button.
-    let art = roundedRect(306, 456, 150, 150, 26)
-    NSGraphicsContext.saveGraphicsState()
-    art.addClip()
-    NSGradient(colors: [color(0x3A1466), color(0xA02F7C)])!.draw(in: art, angle: -45)
-    for (i, hex) in [0xFFFFFF, 0xFF9A5C].enumerated() {
-        let y = 520 + CGFloat(i) * 26
-        let wave = NSBezierPath()
-        wave.move(to: NSPoint(x: 296, y: y))
-        wave.curve(to: NSPoint(x: 470, y: y + 10), controlPoint1: NSPoint(x: 350, y: y + 50), controlPoint2: NSPoint(x: 410, y: y - 40))
-        wave.lineWidth = 9
-        color(UInt32(hex), 0.85).setStroke()
-        wave.stroke()
-    }
-    NSGraphicsContext.restoreGraphicsState()
-
-    color(0x2A0F52, 0.85).setFill()
-    roundedRect(486, 562, 230, 26, 13).fill()
-    color(0x2A0F52, 0.35).setFill()
-    roundedRect(486, 516, 160, 22, 11).fill()
-
-    color(0x2A0F52, 0.12).setFill()
-    roundedRect(306, 398, 412, 16, 8).fill()
-    color(0xFF7A45).setFill()
-    roundedRect(306, 398, 250, 16, 8).fill()
-
-    color(0x2A0F52, 0.85).setFill()
-    let play = NSBezierPath()
-    play.move(to: NSPoint(x: 492, y: 262))
-    play.line(to: NSPoint(x: 492, y: 346))
-    play.line(to: NSPoint(x: 560, y: 304))
-    play.close()
-    play.fill()
 }
 
 func render(_ pixels: Int) -> Data {
