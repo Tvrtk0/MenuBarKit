@@ -31,18 +31,20 @@ func drawIcon() {
     shadow.shadowBlurRadius = 28
     shadow.shadowOffset = NSSize(width: 0, height: -12)
     shadow.set()
-    color(0x2547D0).setFill()
+    color(0xF7567C).setFill()
     tile.fill()
     NSGraphicsContext.restoreGraphicsState()
 
     NSGraphicsContext.saveGraphicsState()
     tile.addClip()
-    // Teal → blue → indigo diagonal, with a cool glow top-left and a violet one bottom-right.
-    NSGradient(colors: [color(0x14B8A6), color(0x2563EB), color(0x4338CA)])!
-        .draw(in: tile, angle: -45)
-    NSGradient(colors: [color(0x5EEAD4, 0.45), color(0x5EEAD4, 0)])!
-        .draw(fromCenter: NSPoint(x: 180, y: 900), radius: 0, toCenter: NSPoint(x: 180, y: 900), radius: 520, options: [])
-    NSGradient(colors: [color(0xA855F7, 0.5), color(0xA855F7, 0)])!
+    // Sunset: peach at the top, through coral pink, down to violet; a warm glow
+    // top-left and a deeper purple one bottom-right.
+    NSGradient(colors: [color(0xFFB36B), color(0xF7567C), color(0x7B2FF7)],
+               atLocations: [0, 0.5, 1], colorSpace: .sRGB)!
+        .draw(in: tile, angle: -70)
+    NSGradient(colors: [color(0xFFE29A, 0.55), color(0xFFE29A, 0)])!
+        .draw(fromCenter: NSPoint(x: 200, y: 880), radius: 0, toCenter: NSPoint(x: 200, y: 880), radius: 520, options: [])
+    NSGradient(colors: [color(0x4C1D95, 0.45), color(0x4C1D95, 0)])!
         .draw(fromCenter: NSPoint(x: 900, y: 120), radius: 0, toCenter: NSPoint(x: 900, y: 120), radius: 560, options: [])
     // Soft sheen along the top edge.
     NSGradient(colors: [color(0xFFFFFF, 0.14), color(0xFFFFFF, 0)])!
@@ -58,7 +60,7 @@ func drawIcon() {
     // The menu bar, with a faint top-to-bottom shade so it isn't flat.
     NSGraphicsContext.saveGraphicsState()
     let barShadow = NSShadow()
-    barShadow.shadowColor = color(0x1E1B4B, 0.35)
+    barShadow.shadowColor = color(0x5B1A6E, 0.35)
     barShadow.shadowBlurRadius = 24
     barShadow.shadowOffset = NSSize(width: 0, height: -8)
     barShadow.set()
@@ -66,14 +68,14 @@ func drawIcon() {
     let bar = roundedRect(232, 572, 560, 72, 36)
     bar.fill()
     NSGraphicsContext.restoreGraphicsState()
-    NSGradient(colors: [color(0xFFFFFF), color(0xE0E7FF)])!.draw(in: bar, angle: -90)
+    NSGradient(colors: [color(0xFFFFFF), color(0xFFE4E6)])!.draw(in: bar, angle: -90)
 
-    // Three items under it; the last one lit.
-    color(0xFFFFFF, 0.6).setFill()
+    // Three items under it; the last one lit like a setting sun.
+    color(0xFFFFFF, 0.45).setFill()
     circle(320, 420, 44).fill()
     circle(512, 420, 44).fill()
 
-    let accent = color(0xFFD166)
+    let accent = color(0xFFF4D6)
     NSGraphicsContext.saveGraphicsState()
     let glow = NSShadow()
     glow.shadowColor = accent.withAlphaComponent(0.8)
